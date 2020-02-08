@@ -29,7 +29,7 @@ def getCenters(img_bgr):
 	for i in range(img_bgr.shape[0]):
 		L = max((img_bgr.astype(int)[i]))+min(img_bgr.astype(int)[i])
 
-		if L > 80 and L < 420:
+		if L > 40 and L < 460:
 			if (tmp_img == np.array([[0,0,0]])).all():
 				tmp_img[0] = img_bgr[i]
 			else:
@@ -75,24 +75,26 @@ if __name__ == '__main__':
 	file_list = os.listdir(folder_src)
 
 	for each in file_list:
-		img_path = folder_src+os.sep+each	
-		#rgb_img = cv2.imread(img.encode('gbk').decode(),cv2.IMREAD_UNCHANGED)
-		rgb_img = cv2.imdecode(np.fromfile(img_path,dtype=np.uint8),-1)
-	
-		#b,g,r = cv2.split(rgb_img)
-		#rgb_img = cv2.merge((b,g,r))
-	
-		c = getCenters(rgb_img)
-	
-		print(c)
-		print(c.shape[0])
-	
-		t = generateSum(rgb_img, c)
-	
-		result = np.vstack((rgb_img,t))
+		if os.path.exists(folder_dst+os.sep+each) == False:
+			img_path = folder_src+os.sep+each	
+			#rgb_img = cv2.imread(img.encode('gbk').decode(),cv2.IMREAD_UNCHANGED)
+			rgb_img = cv2.imdecode(np.fromfile(img_path,dtype=np.uint8),-1)
+		
+			#b,g,r = cv2.split(rgb_img)
+			#rgb_img = cv2.merge((b,g,r))
+		
+			c = getCenters(rgb_img)
+		
+			print(c)
+			print(c.shape[0])
+		
+			t = generateSum(rgb_img, c)
+		
+			result = np.vstack((rgb_img,t))
 
-		cv2.imwrite(folder_dst+os.sep+each,result)
-	
+			
+			#cv2.imwrite(folder_dst+os.sep+each,result)
+			cv2.imencode('.'+each.split('.')[-1],result)[1].tofile(folder_dst+os.sep+each)
 		#cv2.imshow('test',resize(result,600))
 		#cv2.waitKey(0)
 
